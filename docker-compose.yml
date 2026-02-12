@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  betterftp:
+    container_name: betterftp
+    build: .
+    restart: unless-stopped
+    ports:
+      - "2121:2121"         # FTP Control Port
+      - "7000-7010:7000-7010" # Passive Data Ports
+    environment:
+      - PORT=2121
+      - PASV_MIN=7000
+      - PASV_MAX=7010
+      - PASV_URL=0.0.0.0
+      - MAX_CONNECTIONS=100
+      - IDLE_TIMEOUT=30000
+      - ENABLE_ANONYMOUS=false
+      - LOG_LEVEL=info
+      
+      # Authentication Configuration
+      # --- JSON ---
+      # - AUTH_DRIVER=json
+      # - JSON_PATH=/app/users.json
+
+      # --- SQLite ---
+      - AUTH_DRIVER=sqlite
+      - DB_CONNECTION=/app/data/betterftp.sqlite
+      - DB_TABLE=users
+      - DB_COL_USER=username
+      - DB_COL_PASS=password
+      - DB_COL_HOME=homeDir
+      
+      # TLS Configuration (Uncomment and mount certs to enable)
+      # - TLS_ENABLED=false
+      # - TLS_KEY_PATH=/app/certs/key.pem
+      # - TLS_CERT_PATH=/app/certs/cert.pem
+      
+    volumes:
+      # Mount a data directory where user home folders live
+      - ./data:/app/data

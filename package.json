@@ -1,0 +1,53 @@
+{
+  "name": "betterftp",
+  "version": "0.0.1",
+  "description": "",
+  "homepage": "https://github.com/TobankoviChujovinky/BetterFTP#readme",
+  "bugs": {
+    "url": "https://github.com/TobankoviChujovinky/BetterFTP/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TobankoviChujovinky/BetterFTP.git"
+  },
+  "license": "ISC",
+  "author": "Tobis Ondra",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsup src/index.ts --format esm --dts --clean",
+    "start": "node dist/index.js",
+    "lint": "eslint . --fix",
+    "format": "prettier --write .",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:update": "npm run prisma:migrate && npm run prisma:generate",
+    "prisma:seed": "prisma db seed"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@types/bcrypt": "^6.0.0",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^25.2.3",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.3.0",
+    "prettier": "^3.8.1",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.55.0"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "chalk": "^5.6.2",
+    "dotenv": "^17.2.4",
+    "ftp-srv": "^4.6.3",
+    "knex": "^3.1.0",
+    "mysql2": "^3.17.0",
+    "pg": "^8.18.0",
+    "sqlite3": "^5.1.7"
+  }
+}
