@@ -16,6 +16,56 @@ BetterFTP is a modern, modular, and highly configurable FTP server written in Ty
     *   **Configurability**: Full configuration via `.env` file (strictly typed loader).
 *   **Modern Stack**: Built with TypeScript, Node.js, and strictly typed interfaces.
 
+## Docker Support
+
+BetterFTP is fully containerized and ready for Docker environments.
+
+### Running with Docker Compose
+The easiest way to run the server is using Docker Compose. A pre-configured `docker-compose.yml` is included.
+
+1.  **Configure environment**: The `docker-compose.yml` contains its own environment variables. You can modify them directly in the file.
+2.  **Start the container**:
+    ```bash
+    docker-compose up -d
+    ```
+
+The server will be available on port **2121**.
+- User accounts are persisted in `./users.json`.
+- User data is persisted in the `./data` directory on your host machine.
+
+### Building manually
+If you prefer to build the image yourself or pull it from registry:
+
+**Note for Private Registry:**
+If this image is hosted in a private GitHub Organization registry, you must log in first:
+```bash
+# You need a Personal Access Token (PAT) with 'read:packages' scope
+echo $YOUR_GITHUB_TOKEN | docker login ghcr.io -u YOUR_USERNAME --password-stdin
+```
+
+Then you can pull and run:
+
+```bash
+# Pull from GitHub Container Registry (replace with your org/user)
+docker pull ghcr.io/tobankovichujovinky/betterftp:latest
+
+# Run with custom ports
+docker run -p 2121:2121 -p 7000-7010:7000-7010 ghcr.io/tobankovichujovinky/betterftp:latest
+```
+
+### Docker Environment Variables
+
+The Docker image is built with **smart defaults**, so no environment variables are strictly required to start the server. However, for a production setup, you should configure these:
+
+| Variable | Default (Docker) | Description |
+| :--- | :--- | :--- |
+| `PASV_URL` | `0.0.0.0` | **Important:** Set this to your public IP/Hostname if accessing from outside. |
+| `PORT` | `2121` | The internal FTP command port. |
+| `AUTH_DRIVER` | `json` | Defaults to `json` auth. Set to `sqlite`, `mysql`, etc. for DB. |
+| `JSON_PATH` | `/app/data/users.json` | Location of the user file inside the container. |
+
+> **Note:** If you start the container without mapped volumes or config, it will automatically generate a default admin user (`admin` / `admin123`) and print the details to the console log.
+
 ## Installation
 
 1.  **Clone the repository:**
@@ -87,31 +137,6 @@ Builds the TypeScript code to JavaScript (ESM) and runs it.
 ```bash
 npm run build
 npm start
-```
-
-## Docker Support
-
-BetterFTP is fully containerized and ready for Docker environments.
-
-### Running with Docker Compose
-The easiest way to run the server is using Docker Compose. A pre-configured `docker-compose.yml` is included.
-
-1.  **Configure environment**: The `docker-compose.yml` contains its own environment variables. You can modify them directly in the file.
-2.  **Start the container**:
-    ```bash
-    docker-compose up -d
-    ```
-
-The server will be available on port **2121**.
-- User accounts are persisted in `./users.json`.
-- User data is persisted in the `./data` directory on your host machine.
-
-### Building manually
-If you prefer to build the image yourself:
-
-```bash
-docker build -t betterftp .
-docker run -p 2121:2121 -p 7000-7010:7000-7010 betterftp
 ```
 
 ## Architecture
