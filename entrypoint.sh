@@ -5,7 +5,7 @@ set -e
 : "${JSON_PATH:=/app/data/users.json}"
 : "${AUTH_DRIVER:=json}"
 
-echo "🐳 BetterFTP Container Starting..."
+echo "BetterFTP Container Starting..."
 
 # Ensure data directory exists
 mkdir -p "$(dirname "$JSON_PATH")"

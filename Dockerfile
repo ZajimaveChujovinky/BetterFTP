@@ -26,7 +26,7 @@ RUN chmod +x entrypoint.sh
 ENV PORT=2121 \
     PASV_MIN=7000 \
     PASV_MAX=7010 \
-    PASV_URL=0.0.0.0 \
+    PASV_URL=127.0.0.1 \
     MAX_CONNECTIONS=100 \
     IDLE_TIMEOUT=30000 \
     LOG_LEVEL=info \
