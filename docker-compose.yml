@@ -33,6 +33,10 @@ services:
       - DB_COL_PASS=password
       - DB_COL_HOME=homeDir
       
+      # Quota (optional — comment out or remove to disable)
+      # - QUOTA_MAX_FILE_SIZE=104857600   # 100 MB per file
+      # - QUOTA_MAX_TOTAL_SIZE=1073741824 # 1 GB total per user
+      
       # TLS Configuration (Uncomment and mount certs to enable)
       # - TLS_ENABLED=false
       # - TLS_KEY_PATH=/app/certs/key.pem
