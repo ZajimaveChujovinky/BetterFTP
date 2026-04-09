@@ -9,8 +9,8 @@ COPY package.json package-lock.json* ./
 
 # Install dependencies (ignoring scripts initially to speed up)
 # Add build tools for native modules (sqlite3, bcrypt etc)
-RUN apk add --no-cache python3 make g++
-RUN npm ci --ignore-scripts
+RUN apk add --no-cache python3 make g++ && \
+    npm ci --ignore-scripts
 
 # Copy source code
 COPY . .
