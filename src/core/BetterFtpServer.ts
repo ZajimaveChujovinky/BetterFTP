@@ -3,16 +3,19 @@ import { IAuthProvider } from './interfaces/AuthProvider.interface';
 import { ILogger } from './interfaces/Logger.interface';
 import { AppConfig } from '../config/config.interface';
 import { BunyanLogAdapter } from '../infrastructure/logging/BunyanLogAdapter';
+import { createQuotaFileSystemClass } from '../infrastructure/quota/QuotaFileSystem';
 import fs from 'fs';
 
 export class BetterFtpServer {
   private server: FtpSrv;
   private authProvider: IAuthProvider;
   private logger: ILogger;
+  private config: AppConfig;
 
   constructor(config: AppConfig, authProvider: IAuthProvider, logger: ILogger) {
     this.authProvider = authProvider;
     this.logger = logger;
+    this.config = config;
 
     // Create adapter for ftp-srv
     const bunyanLogger = new BunyanLogAdapter(logger);
@@ -33,8 +36,8 @@ export class BetterFtpServer {
 
     this.server = new FtpSrv({
       url: `ftp://0.0.0.0:${config.server.port}`,
-      pasv_url: config.server.pasvUrl || '0.0.0.0', 
-      pasv_min: config.server.pasvMin, 
+      pasv_url: config.server.pasvUrl || '0.0.0.0',
+      pasv_min: config.server.pasvMin,
       pasv_max: config.server.pasvMax,
       greeting: config.ftp.greeting,
       anonymous: config.ftp.enableAnonymous,
@@ -54,8 +57,19 @@ export class BetterFtpServer {
 
       if (user) {
         this.logger.info(`User logged in`, { username, root: user.homeDir });
-        
-        resolve({ root: user.homeDir }); 
+
+        // Resolve effective quota: per-user values take precedence over global config.
+        const effectiveMaxFileSize = user.maxFileSize ?? this.config.quota.maxFileSize;
+        const effectiveMaxTotalSize = user.maxTotalSize ?? this.config.quota.maxTotalSize;
+
+        const QuotaFS = createQuotaFileSystemClass(
+          effectiveMaxFileSize,
+          effectiveMaxTotalSize,
+          this.logger,
+        );
+
+        // ftp-srv expects an already-instantiated FileSystem object (not a class).
+        resolve({ fs: new QuotaFS(connection, { root: user.homeDir, cwd: '/' }) as unknown as FileSystem });
       } else {
         this.logger.warn(`Invalid login`, { username });
         reject(new Error('Invalid username or password.'));

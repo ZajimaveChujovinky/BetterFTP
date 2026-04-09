@@ -39,4 +39,9 @@ export interface AppConfig {
   };
   // Path for JSON driver
   jsonPath?: string;
+  // Quota config (global defaults; per-user values in UserEntity override these)
+  quota: {
+    maxFileSize?: number;  // bytes – max size per single upload
+    maxTotalSize?: number; // bytes – max total size of a user's home directory
+  };
 }

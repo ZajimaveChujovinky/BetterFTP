@@ -39,6 +39,10 @@ export class ConfigLoader {
         },
       },
       jsonPath: process.env.JSON_PATH || './users.json',
+      quota: {
+        maxFileSize: process.env.QUOTA_MAX_FILE_SIZE ? Number(process.env.QUOTA_MAX_FILE_SIZE) : undefined,
+        maxTotalSize: process.env.QUOTA_MAX_TOTAL_SIZE ? Number(process.env.QUOTA_MAX_TOTAL_SIZE) : undefined,
+      },
     };
   }
 }
